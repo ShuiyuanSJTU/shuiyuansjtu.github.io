@@ -1,67 +1,89 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
-  <title>水源社区 - 兼容性</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://cdn.staticfile.org/jquery/3.6.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
-<body>
 
-<div class="jumbotron text-center">
-  <h1 id="result-title">抱歉</h1>
-  <p id="result-text">您的浏览器不支持最新的Discourse，请升级您的浏览器</p> 
-</div>
-  
- <div class="text-center">
- <h3>关于您的浏览器</h3>
-  <p id="browser-info"></p> 
-</div>
-  
+<head>
+    <title>水源社区兼容性检测</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .detect-result {
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        #result-text {
+            font-size: 30px;
+            color: #595959;
+        }
+
+        .user-agent-info {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #browser-info {
+            color: #595959;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="detect-result">
+        <h1 id="result-title">抱歉</h1>
+        <p id="result-text">您的浏览器不支持最新的Discourse，请升级您的浏览器</p>
+    </div>
+
+    <div class="user-agent-info">
+        <h2>关于您的浏览器</h2>
+        <p id="browser-info"></p>
+    </div>
 </body>
 
 <script>
-(function () {
-  if (
-    !window.WeakMap ||
-    !window.Promise ||
-    typeof globalThis === "undefined" ||
-    !String.prototype.replaceAll ||
-    !CSS.supports ||
-    !CSS.supports("aspect-ratio: 1")
-  ) {
-    window.unsupportedBrowser = true;
-  } else {
-    // Some implementations of `WeakMap.prototype.has` do not accept false
-    // values and Ember's `isClassicDecorator` sometimes does that (it only
-    // checks for `null` and `undefined`).
-    try {
-      new WeakMap().has(0);
-    } catch (err) {
-      window.unsupportedBrowser = true;
-    }
+    function detectUnsupportedBrower() {
+        if (
+            !window.WeakMap ||
+            !window.Promise ||
+            typeof globalThis === "undefined" ||
+            !String.prototype.replaceAll ||
+            !CSS.supports ||
+            !CSS.supports("aspect-ratio: 1")
+        ) {
+            return true;
+        } else {
+            // Some implementations of `WeakMap.prototype.has` do not accept false
+            // values and Ember's `isClassicDecorator` sometimes does that (it only
+            // checks for `null` and `undefined`).
+            try {
+                new WeakMap().has(0);
+            } catch (err) {
+                return true;
+            }
 
-    var match = window.navigator.userAgent.match(/Firefox\/([0-9]+)\./);
-    var firefoxVersion = match ? parseInt(match[1], 10) : null;
-    if (firefoxVersion && firefoxVersion < 89) {
-      // prior to v89, Firefox has bugs with document.execCommand("insertText")
-      // https://bugzil.la/1220696
-      window.unsupportedBrowser = true;
-    }
-  }
-})();
-</script>
+            var match = window.navigator.userAgent.match(/Firefox\/([0-9]+)\./);
+            var firefoxVersion = match ? parseInt(match[1], 10) : null;
+            if (firefoxVersion && firefoxVersion < 89) {
+                // prior to v89, Firefox has bugs with document.execCommand("insertText")
+                // https://bugzil.la/1220696
+                return true;
+            }
+        }
+        return false;
+    };
 
-<script>
-if (window.unsupportedBrowser) {
-	document.querySelector("#result-title").innerHTML = "抱歉";
-}else{
-	document.querySelector("#result-title").innerHTML = "恭喜";
-    document.querySelector("#result-text").innerHTML = "您的浏览器已经支持最新版的Discourse";
-}
-document.querySelector("#browser-info").innerHTML = window.navigator.userAgent;
+    if (detectUnsupportedBrower()) {
+        document.querySelector("#result-title").innerHTML = "抱歉";
+    } else {
+        document.querySelector("#result-title").innerHTML = "恭喜";
+        document.querySelector("#result-text").innerHTML = "您的浏览器支持最新版的Discourse";
+    }
+    document.querySelector("#browser-info").innerHTML = window.navigator.userAgent;
 </script>
 
 </html>
