@@ -12,9 +12,7 @@
         }
 
         .detect-result {
-            text-align: center;
-            background-color: #f0f0f0;
-            padding: 20px;
+            margin: 20px;
         }
 
         #result-text {
@@ -23,29 +21,62 @@
         }
 
         .user-agent-info {
-            text-align: center;
-            padding: 20px;
+            margin: 20px;
         }
 
         #browser-info {
             color: #595959;
+        }
+
+        .suggestion {
+            margin: 20px;
         }
     </style>
 </head>
 
 <body>
     <div class="detect-result">
-        <h1 id="result-title">抱歉</h1>
-        <p id="result-text">您的浏览器不支持最新的Discourse，请升级您的浏览器</p>
+        <div id="detect-support">
+            <h1 id="result-title">恭喜</h1>
+            <p id="result-text">您的浏览器支持最新版的Discourse</p>
+        </div>
+        <div id="detect-unsupport">
+            <h1 id="result-title">抱歉</h1>
+            <p id="result-text">您的浏览器不支持最新的Discourse，请升级您的浏览器</p>
+        </div>
     </div>
 
     <div class="user-agent-info">
         <h2>关于您的浏览器</h2>
         <p id="browser-info"></p>
     </div>
+
+    <div class="suggestion">
+        <h2>我们的建议</h2>
+
+        <p id="suggestion-android-jwb">
+            您当前正在使用 Android 版交我办，建议升级系统 WebView 到新版本：
+            <a href="https://jbox.sjtu.edu.cn/l/X17UBb">点击下载</a>，安装后重启手机
+        </p>
+
+        <p id="suggestion-ios">
+            您当前正在使用 iOS，请升级到 iOS 14 及以上版本
+        </p>
+
+        <p id="suggestion-common">
+            推荐使用最新版的下列浏览器：
+        <ul>
+            <li><a href="https://www.microsoft.com/zh-cn/edge/download">Microsoft Edge</a></li>
+            <li><a href="https://www.google.cn/intl/zh-CN/chrome/">Google Chrome</a></li>
+            <li><a href="https://www.mozilla.org/zh-CN/firefox/new/">Mozilla Firefox</a></li>
+            <li><a href="https://www.apple.com.cn/safari/">Apple Safari</a></li>
+        </ul>
+        </p>
+    </div>
 </body>
 
 <script>
+    // this function is from Discourse
     function detectUnsupportedBrower() {
         if (
             !window.WeakMap ||
@@ -77,13 +108,24 @@
         return false;
     };
 
-    if (detectUnsupportedBrower()) {
-        document.querySelector("#result-title").innerHTML = "抱歉";
-    } else {
-        document.querySelector("#result-title").innerHTML = "恭喜";
-        document.querySelector("#result-text").innerHTML = "您的浏览器支持最新版的Discourse";
+    function showSuggestion() {
+        const ua = window.navigator.userAgent.toLowerCase();
+        const isAndroid = ua.includes("android");
+        const isJwb = ua.includes("taskcenterapp");
+        const isIos = ua.includes("iphone") || ua.includes("ipad");
+
+        document.querySelector("#suggestion-ios").style.display = isIos ? "block" : "none";
+        document.querySelector("#suggestion-android-jwb").style.display = (isJwb && isAndroid) ? "block" : "none";
     }
-    document.querySelector("#browser-info").innerHTML = window.navigator.userAgent;
+
+    (function () {
+        document.querySelector("#browser-info").innerHTML = window.navigator.userAgent;
+        const unsupported = detectUnsupportedBrower();
+        document.querySelector("#detect-unsupport").style.display = unsupported ? "block" : "none";
+        document.querySelector("#detect-support").style.display = !unsupported ? "block" : "none";
+        showSuggestion();
+    })();
+
 </script>
 
 </html>
