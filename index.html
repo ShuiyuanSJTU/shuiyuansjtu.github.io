@@ -6,30 +6,76 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        .body {
+        body {
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
         }
 
-        .detect-result {
+        .detect-result, .user-agent-info, .suggestion {
             margin: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
 
-        #result-text {
-            font-size: 30px;
-            color: #595959;
+        h1.result-title {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            color: #333;
         }
 
-        .user-agent-info {
-            margin: 20px;
+        p.result-text {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .inline-emoji {
+            height: 40px;
+            vertical-align: middle;
+            margin-left: 10px;
         }
 
         #browser-info {
-            color: #595959;
+            font-size: 16px;
+            color: #666;
         }
 
-        .suggestion {
-            margin: 20px;
+        h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p.suggestion-text {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        img#logo {
+            height: 80px;
+            max-width: 400px;
+            margin: 50px auto;
+            display: block;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -37,12 +83,18 @@
 <body>
     <div class="detect-result">
         <div id="detect-support">
-            <h1 id="result-title">恭喜</h1>
-            <p id="result-text">您的浏览器支持最新版的Discourse</p>
+            <h1 class="result-title">
+                恭喜
+                <img class="emoji inline-emoji" src="./assets/smiling_face_with_three_hearts.png" alt="smile">
+            </h1>
+            <p class="result-text">您的浏览器支持水源社区最新版本</p>
         </div>
         <div id="detect-unsupport">
-            <h1 id="result-title">抱歉</h1>
-            <p id="result-text">您的浏览器不支持最新的Discourse，请升级您的浏览器</p>
+            <h1 class="result-title">
+                抱歉
+                <img class="emoji inline-emoji" src="./assets/sob.png" alt="cry">
+            </h1>
+            <p class="result-text">您的浏览器不支持水源社区最新版本，请升级您的浏览器</p>
         </div>
     </div>
 
@@ -54,16 +106,16 @@
     <div class="suggestion">
         <h2>我们的建议</h2>
 
-        <p id="suggestion-android-jwb">
+        <p class="suggestion-text" id="suggestion-android-jwb">
             您当前正在使用 Android 版交我办，建议升级系统 WebView 到新版本：
             <a href="https://jbox.sjtu.edu.cn/l/X17UBb">点击下载</a>，安装后重启手机
         </p>
 
-        <p id="suggestion-ios">
+        <p class="suggestion-text" id="suggestion-ios">
             您当前正在使用 iOS，请升级到 iOS 14 及以上版本
         </p>
 
-        <p id="suggestion-common">
+        <p class="suggestion-text" id="suggestion-common">
             推荐使用最新版的下列浏览器：
         <ul>
             <li><a href="https://www.microsoft.com/zh-cn/edge/download">Microsoft Edge</a></li>
@@ -72,6 +124,9 @@
             <li><a href="https://www.apple.com.cn/safari/">Apple Safari</a></li>
         </ul>
         </p>
+    </div>
+    <div>
+        <img id="logo" src="./assets/logo.svg" alt="水源社区">
     </div>
 </body>
 
@@ -125,7 +180,6 @@
         document.querySelector("#detect-support").style.display = !unsupported ? "block" : "none";
         showSuggestion();
     })();
-
 </script>
 
 </html>
