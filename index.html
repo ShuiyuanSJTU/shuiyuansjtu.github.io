@@ -13,7 +13,13 @@
             background-color: #f5f5f5;
         }
 
-        .detect-result, .user-agent-info, .suggestion {
+        .result-container {
+            display: none;
+        }
+
+        .detect-result,
+        .user-agent-info,
+        .suggestion {
             margin: 20px;
             background-color: #fff;
             border-radius: 5px;
@@ -82,19 +88,26 @@
 
 <body>
     <div class="detect-result">
-        <div id="detect-support">
+        <div id="detect-support" class="result-container">
             <h1 class="result-title">
                 恭喜
                 <img class="emoji inline-emoji" src="./assets/smiling_face_with_three_hearts.png" alt="smile">
             </h1>
             <p class="result-text">您的浏览器支持水源社区最新版本</p>
         </div>
-        <div id="detect-unsupport">
+        <div id="detect-unsupport" class="result-container">
             <h1 class="result-title">
                 抱歉
                 <img class="emoji inline-emoji" src="./assets/sob.png" alt="cry">
             </h1>
             <p class="result-text">您的浏览器不支持水源社区最新版本，请升级您的浏览器</p>
+        </div>
+        <div id="detect-future-unsupport" class="result-container">
+            <h1 class="result-title">
+                抱歉
+                <img class="emoji inline-emoji" src="./assets/sob.png" alt="cry">
+            </h1>
+            <p class="result-text">您的浏览器即将不支持水源社区最新版本，请升级您的浏览器</p>
         </div>
     </div>
 
@@ -107,12 +120,11 @@
         <h2>我们的建议</h2>
 
         <p class="suggestion-text" id="suggestion-android-jwb">
-            您当前正在使用 Android 版交我办，建议升级系统 WebView 到新版本：
-            <a href="https://jbox.sjtu.edu.cn/l/X17UBb">点击下载</a>，安装后重启手机
+            您当前正在使用 Android 版交我办，建议升级系统 WebView 到新版本
         </p>
 
         <p class="suggestion-text" id="suggestion-ios">
-            您当前正在使用 iOS，请升级到 iOS 15.7 及以上版本
+            您当前正在使用 iOS，请升级到 iOS 16.7 及以上版本
         </p>
 
         <p class="suggestion-text" id="suggestion-common">
@@ -131,6 +143,19 @@
 </body>
 
 <script>
+    function detectFutureUnsupportedBrower() {
+        if (
+            !CSS.supports("(color: hsl(from white h s l))") ||
+            !CSS.supports("(grid-template-rows: subgrid)"))
+            return true;
+        try {
+            new RegExp("(?<=a)b").test("ab");
+        } catch {
+            return true;
+        }
+        return false;
+    }
+
     // this function is from Discourse
     function detectUnsupportedBrower() {
         if (
@@ -176,8 +201,14 @@
     (function () {
         document.querySelector("#browser-info").innerHTML = window.navigator.userAgent;
         const unsupported = detectUnsupportedBrower();
-        document.querySelector("#detect-unsupport").style.display = unsupported ? "block" : "none";
-        document.querySelector("#detect-support").style.display = !unsupported ? "block" : "none";
+        const futureUnsupported = detectFutureUnsupportedBrower();
+        if (unsupported) {
+            document.querySelector("#detect-unsupport").style.display = "block";
+        } else if (futureUnsupported) {
+            document.querySelector("#detect-future-unsupport").style.display = "block";
+        } else {
+            document.querySelector("#detect-support").style.display = "block";
+        }
         showSuggestion();
     })();
 </script>
